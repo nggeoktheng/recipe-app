@@ -1,8 +1,11 @@
+import LoggedOutHeader from "../components/LoggedOutHeader";
+
 function Home() {
     return (
-        <div>
+        <>
+            <LoggedOutHeader />
             Home Page
-        </div>
+        </>
     )
 }
 
