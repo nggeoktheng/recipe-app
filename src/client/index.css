@@ -1,9 +1,18 @@
+html, body {
+    height: 100vh;
+}
+
 body {
     margin: 0;
+    font-family: "Inter", sans-serif;
 }
 
 a {
     text-decoration: none;
+}
+
+#root {
+    height: 100vh;
 }
 
 .header {
@@ -21,4 +30,48 @@ a {
 /* add margin right but not to the last link */
 .links a:not(:last-child) {
     margin-right: 10px;
+}
+
+/* Signup Form */
+.signup-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    font-size: 1.2rem;
+    line-height: 2rem;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 10px;
+}
+
+form input.error {
+    outline-color: red;
+    border-color: red;
+}
+
+form input:focus {
+    outline-color: blueviolet;
+}
+
+form button {
+    background-color: cornflowerblue;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+form button:disabled {
+    background-color: #6dc4dc;
 }
