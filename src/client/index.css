@@ -75,3 +75,12 @@ form button {
 form button:disabled {
     background-color: #6dc4dc;
 }
+
+.error {
+    display: none;
+    color: red;
+}
+
+.error.show {
+    display: block;
+}
