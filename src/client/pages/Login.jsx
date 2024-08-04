@@ -32,7 +32,7 @@ function Login() {
                 setErrorMsg(data.error);
             }
         } catch {
-            setErrorMsg("Error trying to login, please try again in a few minutes.")
+            setErrorMsg("Error trying to login, please try again in a few minutes.");
         }
     }
     return (
