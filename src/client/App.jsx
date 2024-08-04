@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
+import AddRecipe from './pages/AddRecipe';
 
 function App() {
   const isAuthed = async () => {
@@ -33,6 +34,22 @@ function App() {
     return null;
   }
 
+  const logoutLoader = async () => {
+    try {
+      const res = await fetch("/user/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      });
+      await res.json();
+      return redirect("/login");
+    } catch (error) {
+      return redirect("/login");
+    }
+  }
+
   useEffect(() => {
     async function fetchAPI() {
       const res = await fetch("/hello");
@@ -54,13 +71,23 @@ function App() {
       element: <Login />
     },
     {
+      path: "/logout",
+      loader: logoutLoader
+    },
+    {
       path: "/Signup",
       element: <Signup />
     },
+    // Authenticated routes
     {
       path: "/profile",
       loader: authLoader,
       element: <Profile />
+    },
+    {
+      path: "/add-recipe",
+      loader: authLoader,
+      element: <AddRecipe />
     }
   ]);
 

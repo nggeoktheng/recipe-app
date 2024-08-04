@@ -6,8 +6,9 @@ function LoggedInHeader() {
             <Link to={"/"}>Recipe App</Link>
 
             <div className="links">
-                <Link to={"/logout"}>Logout</Link>
+                <Link to={"/add-recipe"}>Add Recipe</Link>
                 <Link to={"/profile"}>Profile</Link>
+                <Link to={"/logout"}>Logout</Link>
             </div>
         </div>
     )
