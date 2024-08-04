@@ -1,8 +1,10 @@
 import { useState } from "react";
 import LoggedOutHeader from "../components/LoggedOutHeader";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [errorMsg, setErrorMsg] = useState("");
+    const navigate = useNavigate();
     async function loginUser(evt) {
         evt.preventDefault();
         setErrorMsg("");
@@ -11,6 +13,7 @@ function Login() {
         try {
             const res = await fetch("/user/login", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -22,7 +25,7 @@ function Login() {
             const data = await res.json();
             
             if (data.success) {
-                // handle success
+                navigate("/profile");
             }
 
             if (data.error) {

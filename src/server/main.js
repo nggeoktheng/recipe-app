@@ -23,14 +23,24 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
+    httpOnly: true,
     // Set to secure for production
     secure: process.env.NODE_ENV === "production" ? true : false,
-    maxAge: 60000 // 1 min (60,000 milliseconds)
+    maxAge: 60000 * 24 // 1 min (60,000 milliseconds)
   }
 }));
 
 // Routes
 app.use("/user", userRouter);
+
+// Check if a user is logged in
+app.get("/check", async (req, res) => {
+  if (req.session.user) {
+    res.json({ isAuthed: true });
+    return;
+  }
+  res.json({ isAuthed: false });
+})
 
 ViteExpress.config({
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development'
