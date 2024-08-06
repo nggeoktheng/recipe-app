@@ -21,6 +21,7 @@ router.post("/login", async (req, res) => {
         const user = await loginUser(email, password);
 
         if (user) {
+            console.log("Added a user: ", user);
             req.session.user = user;
             res.json({success: true});
         }

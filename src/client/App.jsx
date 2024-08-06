@@ -34,6 +34,15 @@ function App() {
     return null;
   }
 
+  const profileLoader = async () => {
+    const isLoggedIn = await isAuthed();
+    if (isLoggedIn) {
+      return redirect("/profile");
+    }
+
+    return null;
+  }
+
   const logoutLoader = async () => {
     try {
       const res = await fetch("/user/logout", {
@@ -68,6 +77,7 @@ function App() {
     },
     {
       path: "/login",
+      loader: profileLoader,
       element: <Login />
     },
     {

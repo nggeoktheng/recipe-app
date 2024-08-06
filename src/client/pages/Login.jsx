@@ -25,6 +25,7 @@ function Login() {
             const data = await res.json();
             
             if (data.success) {
+                window.location.reload(true);
                 navigate("/profile");
             }
 
