@@ -8,7 +8,7 @@ function Login() {
     async function loginUser(evt) {
         evt.preventDefault();
         setErrorMsg("");
-        const { email, password } = evt.target.elements;
+        const { username, password } = evt.target.elements;
 
         try {
             const res = await fetch("/user/login", {
@@ -18,7 +18,7 @@ function Login() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: email.value,
+                    username: username.value,
                     password: password.value
                 })
             });
@@ -42,7 +42,7 @@ function Login() {
             <h1>Login</h1>
             <div className={`error ${errorMsg.length ? "show" : "" }`}>{errorMsg}</div>
             <form onSubmit={loginUser}>
-                <input type="email" name="email" placeholder="Email" />
+                <input type="text" name="username" placeholder="Username" />
                 <input type="password" name="password" placeholder="Password" />
                 <button type="submit">Login</button>
             </form>

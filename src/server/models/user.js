@@ -41,26 +41,26 @@ export const createUser = async ({
     }
 }
 
-export const loginUser = async(email, password) => {
+export const loginUser = async(username, password) => {
     try {
-        const userByEmail = await sql`SELECT * FROM users WHERE email = ${email}`;
+        const userByUsername = await sql`SELECT * FROM users WHERE username = ${username}`;
 
-        if (userByEmail.length === 0) {
+        if (userByUsername.length === 0) {
             throw new Error("User not found");
         }
 
-        const result = await bcrypt.compare(password, userByEmail[0].password);
+        const result = await bcrypt.compare(password, userByUsername[0].password);
 
         if (!result) {
             throw new Error("Password does not match");
         }
 
         return {
-            id: userByEmail[0].id,
-            first_name: userByEmail[0].first_name,
-            last_name: userByEmail[0].last_name,
-            username: userByEmail[0].username,
-            email: userByEmail[0].email
+            id: userByUsername[0].id,
+            first_name: userByUsername[0].first_name,
+            last_name: userByUsername[0].last_name,
+            username: userByUsername[0].username,
+            email: userByUsername[0].email
         };
     } catch (error) {
         console.log("Login database error: ", error);

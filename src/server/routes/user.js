@@ -14,10 +14,10 @@ router.post("/", async (req, res) => {
 
 // Login user
 router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     try {
-        const user = await loginUser(email, password);
+        const user = await loginUser(username, password);
 
         if (user) {
             req.session.user = user;
