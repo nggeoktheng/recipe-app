@@ -4,16 +4,15 @@ import { createUser, loginUser } from "../models/user.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-    const { name, email, password } = req.body;
-
     try {
-        await createUser(name, email, password);
+        await createUser(req.body);
         res.json({success: true});
     } catch (error) {
         res.json({error: error.message});
     }
 });
 
+// Login user
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -21,7 +20,6 @@ router.post("/login", async (req, res) => {
         const user = await loginUser(email, password);
 
         if (user) {
-            console.log("Added a user: ", user);
             req.session.user = user;
             res.json({success: true});
         }

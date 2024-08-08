@@ -46,6 +46,11 @@ a {
     flex-direction: column;
 }
 
+.signup-container form section {
+    display: flex;
+    flex-direction: column;
+}
+
 form input {
     font-size: 1.2rem;
     line-height: 2rem;

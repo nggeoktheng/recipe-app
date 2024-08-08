@@ -17,6 +17,7 @@ app.get("/hello", (req, res) => {
 // To parse the body as json
 app.use(express.json());
 // For sessions
+app.set("trust proxy", true);
 app.use(session({
   name: "GT_RECIPE_APP",
   secret: process.env.SESSION_SECRET,
@@ -34,6 +35,7 @@ app.use(session({
 app.use("/user", userRouter);
 
 // Check if a user is logged in
+// to check logged in state
 app.get("/check", async (req, res) => {
   if (req.session.user) {
     res.json({ isAuthed: true });
