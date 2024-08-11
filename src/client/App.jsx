@@ -4,7 +4,7 @@ import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom"
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Profile from './pages/Profile';
+import Profile, { userDataLoader } from './pages/Profile';
 import AddRecipe from './pages/AddRecipe';
 
 function App() {
@@ -34,15 +34,6 @@ function App() {
     return null;
   }
 
-  const profileLoader = async () => {
-    const isLoggedIn = await isAuthed();
-    if (isLoggedIn) {
-      return redirect("/profile");
-    }
-
-    return null;
-  }
-
   const logoutLoader = async () => {
     try {
       const res = await fetch("/user/logout", {
@@ -59,16 +50,16 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    async function fetchAPI() {
-      const res = await fetch("/hello");
-      const data = await res.json();
-
-      console.log("has data: ", data);
+  const redirectLoader = (redirectRoute) => {
+    return async () => {
+      const isLoggedIn = await isAuthed();
+      if (isLoggedIn) {
+        return redirect(redirectRoute);
+      }
+      
+      return null;
     }
-
-    fetchAPI();
-  }, []);
+  }
 
   const router = createBrowserRouter([
     {
@@ -77,7 +68,7 @@ function App() {
     },
     {
       path: "/login",
-      loader: profileLoader,
+      loader: redirectLoader("/profile"),
       element: <Login />
     },
     {
@@ -91,7 +82,7 @@ function App() {
     // Authenticated routes
     {
       path: "/profile",
-      loader: authLoader,
+      loader: userDataLoader,
       element: <Profile />
     },
     {

@@ -31,6 +31,9 @@ app.use(session({
   }
 }));
 
+// Serve the uploaded files as static files
+app.use("/uploads", express.static(import.meta.dirname + "/uploads"));
+
 // Routes
 app.use("/user", userRouter);
 

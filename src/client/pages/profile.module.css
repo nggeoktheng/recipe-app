@@ -1,0 +1,6 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    background-color: aliceblue;
+    padding: 0px 16px;
+}

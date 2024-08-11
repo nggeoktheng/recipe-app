@@ -67,3 +67,32 @@ export const loginUser = async(username, password) => {
         throw error;
     }
 }
+
+export const getUserProfile = async (userId) => {
+    try {
+        const userProfile = await sql`SELECT * FROM users WHERE id = ${userId}`;
+
+        console.log("Got user: ", {userProfile: userProfile[0]});
+        const userToReturn = userProfile[0];
+        delete userToReturn.password;
+
+        return userToReturn;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const setUserAvatar = async (avatarImgUrl, userId) => {
+    try {
+        const userAvatar = await sql `UPDATE users SET profile_img = ${avatarImgUrl} WHERE id = ${userId}`;
+
+        console.log("Set avatar: ", {
+            avatarImgUrl,
+            userId,
+            userAvatar: userAvatar.count
+        });
+        return userAvatar.count > 0;
+    } catch (error) {
+        console.log("Got error: ", error);
+    }
+}
