@@ -4,6 +4,7 @@ import session from "express-session";
 import dotenv from 'dotenv';
 
 import userRouter from "./routes/user.js";
+import recipeRouter from "./routes/recipe.js";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use("/uploads", express.static(import.meta.dirname + "/uploads"));
 
 // Routes
 app.use("/user", userRouter);
+app.use("/recipe", recipeRouter);
 
 // Check if a user is logged in
 // to check logged in state

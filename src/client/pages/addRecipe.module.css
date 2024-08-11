@@ -1,0 +1,6 @@
+.recipe {
+    display: flex;
+    flex-direction: column;
+    max-width: 80vw;
+    margin: 0 auto;
+}

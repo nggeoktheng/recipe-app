@@ -64,6 +64,17 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      loader: async () => {
+        try {
+          const res = await fetch("/recipe");
+          const data = await res.json();
+
+          console.log("Recipes: ", data);
+          return data.recipes;
+        } catch (error) {
+          return null;
+        }
+      },
       element: <Home />
     },
     {
