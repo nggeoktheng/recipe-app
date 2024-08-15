@@ -108,15 +108,29 @@ function App() {
     {
       path: "/recipes/:recipeId",
       element: <RecipeDetails />,
+      // params refers to URL parameters e.g. :recipeId is a param
       loader: async function ({ params }) {
-        const res = await fetch(`/recipe/${params.recipeId}`, {
-          credentials: "include"
-        });
-        const { recipe } = await res.json();
+        try {
+          const res = await fetch(`/recipe/${params.recipeId}`, {
+            credentials: "include"
+          });
 
-        return {
-          recipe,
-          isAuthed: await isAuthed()
+          if (!res.ok) {
+            throw new Error("Recipe not found");
+          }
+
+          const { recipe } = await res.json();
+  
+          return {
+            recipe,
+            isAuthed: await isAuthed()
+          };
+        } catch (error) {
+          return {
+            recipe: null,
+            isAuthed: await isAuthed(),
+            error: error.message
+          };
         }
       }
     }

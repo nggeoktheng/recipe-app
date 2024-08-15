@@ -8,3 +8,5 @@ CREATE TABLE "starred" (
 ALTER TABLE "starred" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "starred" ADD FOREIGN KEY ("recipe_id") REFERENCES "recipes" ("id");
+
+ALTER TABLE "starred" ADD CONSTRAINT "unique_user_recipe" UNIQUE ("user_id", "recipe_id");
