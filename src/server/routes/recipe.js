@@ -2,7 +2,8 @@ import path from "path";
 import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import multer from "multer";
-import { addRecipe, getRecipes } from "../models/recipe.js";
+import { addRecipe, getRecipeById, getRecipes } from "../models/recipe.js";
+import { error } from "console";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -28,6 +29,15 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/:recipeId", async (req, res) => {
+    try {
+        const recipe = await getRecipeById(req.params.recipeId);
+        return res.json({ recipe });
+    } catch (error) {
+        return res.json({ error: error.message });
+    }
+})
+
 router.post("/", isAuthenticated, upload.single("image"), async (req, res) => {
     const imagePath = `/uploads/${req.file.filename}`;
     try {
@@ -39,7 +49,12 @@ router.post("/", isAuthenticated, upload.single("image"), async (req, res) => {
             cooking_time: req.body.cooking_time,
             image_url: imagePath
         });
-        res.json({ success: savedImage });
+        
+        if (savedImage) {
+            return res.json({ success: true, recipeId: savedImage });
+        }
+
+        return res.json({ error: "Unable to save recipe"});
     } catch (error) {
         res.json({ error: error.message });
     }

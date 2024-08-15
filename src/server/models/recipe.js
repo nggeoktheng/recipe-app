@@ -13,10 +13,29 @@ export const getRecipes = async () => {
     }
 }
 
+export const getRecipeById = async (recipeId) => {
+    try {
+        const recipes = await sql`
+            SELECT recipes.id, recipes.user_id, recipes.image_url, recipes.title, users.username from recipes
+            JOIN users ON public.users.id = public.recipes.user_id
+            WHERE recipes.id = ${recipeId}
+        `;
+
+        return recipes;
+    } catch (error) {
+        console.log("DB Error: ", error.message);
+    }
+}
+
 export const addRecipe = async (recipe) => {
     try {
-        const addRecipe = await sql`INSERT INTO recipes ${sql(recipe)}`;
-        return addRecipe.count > 0;
+        const addRecipe = await sql`
+            INSERT INTO recipes ${
+                sql(recipe)
+            }
+            RETURNING id
+        `;
+        return addRecipe[0].id;
     } catch (error) {
         console.log("Database Error: ", error);
     }

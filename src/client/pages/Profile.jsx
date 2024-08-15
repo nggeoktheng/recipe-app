@@ -48,7 +48,7 @@ function Profile() {
 
     return (
         <>
-            <LoggedInHeader />
+            <LoggedInHeader userImg={user.profile_img ? `/uploads/${user.profile_img}` : null} firstName={user.first_name} />
             <div className="{styles.profile">
                 <h2>Welcome {user.first_name}</h2>
                 <Avatar 

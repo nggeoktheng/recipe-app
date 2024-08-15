@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile, { userDataLoader } from './pages/Profile';
 import AddRecipe from './pages/AddRecipe';
+import RecipeDetails from './pages/RecipeDetails';
 
 function App() {
   const isAuthed = async () => {
@@ -70,7 +71,10 @@ function App() {
           const data = await res.json();
 
           console.log("Recipes: ", data);
-          return data.recipes;
+          return {
+            recipes: data.recipes,
+            isAuthed: await isAuthed()
+          };
         } catch (error) {
           return null;
         }
@@ -100,6 +104,21 @@ function App() {
       path: "/add-recipe",
       loader: authLoader,
       element: <AddRecipe />
+    },
+    {
+      path: "/recipes/:recipeId",
+      element: <RecipeDetails />,
+      loader: async function ({ params }) {
+        const res = await fetch(`/recipe/${params.recipeId}`, {
+          credentials: "include"
+        });
+        const recipeDetails = await res.json();
+
+        return {
+          recipeDetails,
+          isAuthed: await isAuthed()
+        }
+      }
     }
   ]);
 

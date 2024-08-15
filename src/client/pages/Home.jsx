@@ -1,13 +1,14 @@
 import { useLoaderData } from "react-router-dom";
 import LoggedOutHeader from "../components/LoggedOutHeader";
+import LoggedInHeader from "../components/LoggedInHeader";
 
 function Home() {
-    const recipes = useLoaderData();
+    const {recipes, isAuthed} = useLoaderData();
 
-    console.log("My recipes ", recipes);
+    console.log("My recipes ", {recipes, isAuthed});
     return (
         <>
-            <LoggedOutHeader />
+            {isAuthed ? <LoggedInHeader /> : <LoggedOutHeader />}
             Home Page
         </>
     )
