@@ -32,8 +32,14 @@ app.use(session({
   }
 }));
 
+export const pathToUploads = process.env.NODE_ENV === "production" ? "/var/data/uploads" : import.meta.dirname + "/uploads";
+
 // Serve the uploaded files as static files
-app.use("/uploads", express.static(import.meta.dirname + "/uploads"));
+app.use("/uploads", express.static(pathToUploads));
+
+console.log("Where is uploads? ", {
+  path: import.meta.dirname + "/uploads"
+});
 
 // Routes
 app.use("/user", userRouter);

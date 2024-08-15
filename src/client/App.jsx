@@ -112,10 +112,10 @@ function App() {
         const res = await fetch(`/recipe/${params.recipeId}`, {
           credentials: "include"
         });
-        const recipeDetails = await res.json();
+        const { recipe } = await res.json();
 
         return {
-          recipeDetails,
+          recipe,
           isAuthed: await isAuthed()
         }
       }

@@ -3,11 +3,11 @@ import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import multer from "multer";
 import { addRecipe, getRecipeById, getRecipes } from "../models/recipe.js";
-import { error } from "console";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(import.meta.dirname, '../uploads'))
+        const pathToUploads = process.env.NODE_ENV === "production" ? "/var/data/uploads" : import.meta.dirname + "../uploads";
+        cb(null, path.join(pathToUploads));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
