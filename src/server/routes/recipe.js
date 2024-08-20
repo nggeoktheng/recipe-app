@@ -22,11 +22,12 @@ const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
     try {
-        const recipes = await getRecipes();
+        const searchTerm = req.query.search || "";
+        const recipes = await getRecipes(searchTerm);
 
         res.json({ recipes });
     } catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 

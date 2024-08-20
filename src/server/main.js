@@ -59,6 +59,10 @@ ViteExpress.config({
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development'
 });
 
+import initializeDatabase from "./intializeDatabase.js";
+
+await initializeDatabase();
+
 ViteExpress.listen(app, 3000, () =>
   console.log(`Server is listening on port ${port}`),
 );

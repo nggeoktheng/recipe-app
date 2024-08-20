@@ -65,18 +65,23 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      loader: async () => {
+      loader: async ({ request }) => {
         try {
-          const res = await fetch("/recipe");
+          const url = new URL(request.url);
+          const searchTerm = url.searchParams.get("search") || "";
+          const res = await fetch(`/recipe?search=${encodeURIComponent(searchTerm)}`);
           const data = await res.json();
 
-          console.log("Recipes: ", data);
           return {
             recipes: data.recipes,
             isAuthed: await isAuthed()
           };
         } catch (error) {
-          return null;
+          console.error("Error loading recipes: ", error);
+          return {
+            recipes: [],
+            isAuthed: await isAuthed()
+          };
         }
       },
       element: <Home />

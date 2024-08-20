@@ -1,10 +1,12 @@
 import sql from "../database.js";
 
-export const getRecipes = async () => {
+export const getRecipes = async (searchTerm = "") => {
     try {
         const recipes = await sql`
             SELECT recipes.id, recipes.user_id, recipes.image_url, recipes.title, users.username FROM recipes
             JOIN users ON public.users.id = public.recipes.user_id
+            WHERE LOWER(recipes.title) LIKE LOWER(${`%${searchTerm}%`})
+            ORDER BY recipes.created_date DESC
         `;
 
         return recipes;
