@@ -84,15 +84,39 @@ export const getUserProfile = async (userId) => {
 
 export const setUserAvatar = async (avatarImgUrl, userId) => {
     try {
-        const userAvatar = await sql `UPDATE users SET profile_img = ${avatarImgUrl} WHERE id = ${userId}`;
+        const result = await sql`
+            UPDATE users
+            SET profile_img = ${avatarImgUrl}
+            WHERE id = ${userId}
+            RETURNING *;
+        `;
 
-        console.log("Set avatar: ", {
-            avatarImgUrl,
-            userId,
-            userAvatar: userAvatar.count
-        });
-        return userAvatar.count > 0;
+        const updatedUser = result[0];
+        delete updatedUser.password;
+        return updatedUser;
     } catch (error) {
-        console.log("Got error: ", error);
+        console.error("Error updating avatar: ", error);
+        throw error;
+    }
+}
+
+export const updateUserProfile = async (userId, updatedInfo) => {
+    try {
+        const { first_name, last_name, username, bio, dob } = updatedInfo;
+        const result = await sql`
+            UPDATE users
+            SET
+                first_name = ${first_name},
+                last_name = ${last_name},
+                username = ${username},
+                bio = ${bio},
+                dob = ${dob}
+            WHERE id = ${userId}
+            RETURNING id, first_name, last_name, username, bio, dob, email, profile_img
+        `;
+        return result[0];
+    } catch (error) {
+        console.log("Database Error: ", error);
+        throw error;
     }
 }

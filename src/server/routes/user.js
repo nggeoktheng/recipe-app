@@ -1,14 +1,14 @@
 import path from "path";
 import express from "express";
-import { createUser, getUserProfile, loginUser, setUserAvatar } from "../models/user.js";
+import { createUser, getUserProfile, loginUser, setUserAvatar, updateUserProfile } from "../models/user.js";
 import { isAuthenticated } from "../middleware/auth.js";
 import multer from "multer";
 
 const router = express.Router();
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const pathToUploads = process.env.NODE_ENV === "production" ? "/var/data/uploads" : import.meta.dirname + "../uploads";
-        cb(null, path.join(pathToUploads));
+        const pathToUploads = process.env.NODE_ENV === "production" ? "/var/data/uploads" : path.join(import.meta.dirname, "../uploads");
+        cb(null, pathToUploads);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
@@ -30,22 +30,31 @@ router.post("/", async (req, res) => {
 });
 
 // Get user profile data
-router.get("/", isAuthenticated, async (req, res) => {
-    const user = await getUserProfile(req.session.user.id);
+router.get("/profile", isAuthenticated, async (req, res) => {
+    try {
+        const userProfile = await getUserProfile(req.session.user.id);
+        res.json({userProfile});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-    res.json({user})
+router.put("/profile", isAuthenticated, async (req, res) => {
+    try {
+        const updatedProfile = await updateUserProfile(req.session.user.id, req.body);
+        res.json(updatedProfile);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 router.post("/avatar", isAuthenticated, upload.single("avatar"), async (req, res) => {
-    console.log("I have ", {
-        file: req.file
-    });
-    const filename = req.file.filename;
     try {
-        const uploaded = await setUserAvatar(filename, req.session.user.id);
-        return res.json({ success: uploaded });
+        const avatarUrl = `/uploads/${req.file.filename}`;
+        const updatedUser = await setUserAvatar(avatarUrl, req.session.user.id);
+        res.json(updatedUser);
     } catch (error) {
-        return res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
