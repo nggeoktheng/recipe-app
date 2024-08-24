@@ -89,9 +89,21 @@ const addStarToRecipe = async (userId, recipeId) => {
 };
 
 const addCommentToRecipe = async (userId, recipeId) => {
+    const comments = [
+        "This recipe is amazing! I'll definitely make it again.",
+        "I loved how easy this was to make. Great for busy weeknights!",
+        "The flavors were perfect. My whole family enjoyed it.",
+        "I made a few tweaks based on what I had in the pantry, and it still turned out great.",
+        "This has become a regular in our meal rotation. Thanks for sharing!",
+        "The instructions were clear and easy to follow. Perfect for beginner cooks.",
+        "I was skeptical at first, but this exceeded my expectations. Delicious!",
+        "The presentation was beautiful. It looked just like the picture!",
+        "I appreciated how customizable this recipe is. It's very versatile.",
+        "This was a hit at our dinner party. Everyone asked for the recipe!"
+    ];
     await sql`
         INSERT INTO comments (user_id, recipe_id, comment)
-        VALUES (${userId}, ${recipeId}, ${faker.lorem.sentence()})
+        VALUES (${userId}, ${recipeId}, ${comments[Math.floor(Math.random() * comments.length)]})
     `;
 };
 
@@ -102,7 +114,9 @@ const seedDatabase = async () => {
     }
   
     const users = [];
-    for (let i = 0; i < 5; i++) {
+    const uniqueRecipeTitles = new Set(); // Set to track unique recipe titles
+    
+    for (let i = 0; i < 10; i++) {
         const userId = await createUser(
             faker.internet.userName(),
             faker.internet.email()
@@ -111,15 +125,35 @@ const seedDatabase = async () => {
     
         const recipeCount = faker.number.int({ min: 5, max: 10 });
         for (let j = 0; j < recipeCount; j++) {
-            const recipeId = await createRecipe(userId);
-            if (recipeId) {
+            let recipe;
+            let attempts = 0;
+            const maxAttempts = 10; // Limit attempts to avoid infinite loop
+            
+            do {
+                recipe = await fetchRecipeFromMealDB();
+                attempts++;
+            } while (
+                recipe && uniqueRecipeTitles.has(recipe.title) && attempts < maxAttempts
+            );
+
+            if (recipe) {
+                recipe.user_id = userId;
+
+                // If the recipe is unique, add it to the set
+                uniqueRecipeTitles.add(recipe.title);
+
+                const [newRecipe] = await sql`
+                    INSERT INTO recipes ${sql(recipe)}
+                    RETURNING id
+                `;
+
                 // Add stars and comments
                 for (let k = 0; k < users.length; k++) {
                     if (faker.number.int({ min: 0, max: 1 })) {
-                    await addStarToRecipe(users[k], recipeId);
+                        await addStarToRecipe(users[k], newRecipe.id);
                     }
                     if (faker.number.int({ min: 0, max: 1 })) {
-                    await addCommentToRecipe(users[k], recipeId);
+                        await addCommentToRecipe(users[k], newRecipe.id);
                     }
                 }
             }

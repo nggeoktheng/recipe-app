@@ -4,17 +4,34 @@ import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
+import Ingredient from "../components/Ingredient";
 
 const Ingredients = ({ ingredients }) => {
-    const pakNSaveSearch = "https://www.paknsave.co.nz/shop/search?q=";
-    const ingredientsArr = ingredients.split(",").map(s => s.trim());
+    let ingredientsArr;
+    try {
+        ingredientsArr = JSON.parse(ingredients);
+    } catch (error) {
+        console.error("Error parsing ingredients: ", error);
+        ingredientsArr = [];
+    }
   
-    console.log("Ingredients Arr: ", ingredientsArr);
     return (
-        <>
-            <h3>Ingredients</h3>
-            <div>{ingredients}</div>
-        </>
+        <div className="mb-6">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-700">Ingredients</h3>
+            <p className="text-sm text-gray-600 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Click on product info to view on Countdown
+            </p>
+            <ul className="space-y-2">
+                {ingredientsArr.map((ingredient, index) => (
+                    <li key={`ingredient-${index}`}>
+                        <Ingredient name={ingredient} />
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 };
   
@@ -178,25 +195,24 @@ function RecipeDetails() {
     return (
         <>
             {isAuthed ? <LoggedInHeader /> : <LoggedOutHeader />}
-            <div className="container mx-auto">
-                <article className="prose">
-                    <h2>{recipe.title}</h2>
-
-                    <button 
-                        onClick={handleStarClick}
-                        className={`px-4 py-2 rounded ${isStarred ? 'bg-yellow-400' : 'bg-gray-200'}`}
-                        disabled={isLoading}
-                    >
-                        {isStarred ? '★ Starred' : '☆ Star'}
-                    </button>
-
-                    <img className="w-auto" src={recipe.image_url} alt={recipe.title} />
-
-                    <Ingredients ingredients={recipe.ingredients} />
-
-                    <PreparationSteps steps={recipe.steps} />
+            <div className="container mx-auto px-4 py-8">
+                <article className="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <img className="w-full h-64 object-cover" src={recipe.image_url} alt={recipe.title} />
+                    <div className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-3xl font-bold text-gray-800">{recipe.title}</h2>
+                            <button 
+                                onClick={handleStarClick}
+                                className={`px-4 py-2 rounded-full ${isStarred ? 'bg-yellow-400 text-gray-800' : 'bg-gray-200 text-gray-600'} hover:bg-yellow-300 transition duration-300`}
+                                disabled={isLoading}
+                            >
+                                {isStarred ? '★ Starred' : '☆ Star'}
+                            </button>
+                        </div>
+                        <Ingredients ingredients={recipe.ingredients} />
+                        <PreparationSteps steps={recipe.steps} />
+                    </div>
                 </article>
-
                 <Comments recipeId={recipe.id} isAuthed={isAuthed} />
             </div>
         </>

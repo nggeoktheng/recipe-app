@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import userRouter from "./routes/user.js";
 import recipeRouter from "./routes/recipe.js";
+import apiRouter from "./routes/api.js"; // New import for the api routes
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ console.log("Where is uploads? ", {
 // Routes
 app.use("/user", userRouter);
 app.use("/recipe", recipeRouter);
+app.use('/api', apiRouter); // New route for the api routes
 
 // Check if a user is logged in
 // to check logged in state

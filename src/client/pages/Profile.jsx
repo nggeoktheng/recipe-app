@@ -23,12 +23,12 @@ function Profile() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     
-    const handleProfileUpdate = async (updateProfile) => {
+    const handleProfileUpdate = async (updatedProfile) => {
         try {
             const response = await fetch("/user/profile", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updateProfile),
+                body: JSON.stringify(updatedProfile),
                 credentials: "include"
             });
             if (!response.ok) throw new Error("Failed to update profile");
