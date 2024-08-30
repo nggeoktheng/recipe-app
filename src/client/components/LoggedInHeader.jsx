@@ -16,7 +16,7 @@ function LoggedInHeader({ userImg, firstName }) {
         }
 
         if (user.profile_img) {
-            setAvatarImg(`/uploads/${user.profile_img}`);
+            setAvatarImg(`${user.profile_img}`);
         }
     }
     

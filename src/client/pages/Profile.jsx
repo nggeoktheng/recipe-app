@@ -3,7 +3,7 @@ import LoggedInHeader from "../components/LoggedInHeader";
 import { Avatar } from "@files-ui/react";
 import defaultAvatarImg from "../assets/default.png";
 import ProfileForm from "../components/ProfileForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function userDataLoader() {
     const res = await fetch("/user/profile", {
@@ -19,7 +19,7 @@ export async function userDataLoader() {
 }
 
 function Profile() {
-    const user = useLoaderData();
+    const [user, setUser] = useState(useLoaderData());
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     
@@ -51,7 +51,7 @@ function Profile() {
             });
             if (!response.ok) throw new Error("Failed to upload avatar");
             const updatedUser = await response.json();
-            setUser(updatedUser);
+            setUser(prevUser => ({ ...prevUser, ...updatedUser }));
         } catch (err) {
             setError(err.message);
         }
