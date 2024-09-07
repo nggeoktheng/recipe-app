@@ -2,6 +2,15 @@
 // Countdown API
 // Search API URL: https://www.woolworths.co.nz/api/v1/products?target=search&search=apples&inStockProductsOnly=false&size=48
 
+const browserRequestHeaders = {
+    'X-Requested-With': 'OnlineShopping.WebApp',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    // 'x-ui-ver': '7.46.138',
+    // 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    // 'Accept': 'application/json, text/plain, */*',
+    'referer': 'https://www.google.com/'
+}
+
 async function setupCountdownAddress() {
     const url = 'https://www.countdown.co.nz/api/v1/fulfilment/my/pickup-addresses';
     const payload = {
@@ -12,14 +21,14 @@ async function setupCountdownAddress() {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'OnlineShopping.WebApp',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                ...browserRequestHeaders
             },
+            credentials: 'include',
             body: JSON.stringify(payload)
         });
     
         if (!response.ok) {
+            console.error(`Failed to set up address:`, response);
             throw new Error(`Failed to set up address: ${response.status}`);
         }
     
@@ -36,8 +45,10 @@ async function searchCountdownNZ(ingredients) {
     const results = [];
   
     for (const ingredient of ingredients) {
-        const [quantity, ...nameParts] = ingredient.trim().split(' ');
-        const name = nameParts.join(' ');
+        console.log("Looking at", ingredient);
+
+        const quantity = 1;
+        const name = ingredient;
     
         const url = `https://www.woolworths.co.nz/api/v1/products`;
         const params = new URLSearchParams({
@@ -49,21 +60,20 @@ async function searchCountdownNZ(ingredients) {
   
         try {
             const response = await fetch(`${url}?${params}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'OnlineShopping.WebApp',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
+                method: 'GET',
+                headers: {
+                    ...browserRequestHeaders
+                },
+                credentials: 'include'
             });
-    
+            
+            let data;
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // throw new Error(`HTTP error! status: ${response.status}`);
+                console.log("Response FAILED");
+            } else {
+                data = await response.json();
             }
-    
-            const data = await response.json();
-    
-            console.log('Data: ', data);
     
             if (data.products && data.products.items && data.products.items.length > 0) {
                 const product = data.products.items[0];

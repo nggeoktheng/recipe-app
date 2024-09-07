@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getCache, setCache } from "../utils/cache";
 
 function Ingredient({ name }) {
     const [productInfo, setProductInfo] = useState(null);
@@ -7,15 +8,34 @@ function Ingredient({ name }) {
     useEffect(() => {
         const fetchProductInfo = async () => {
             try {
+                let ingredientName = null;
+                // Parsing for simple ingredients, like "2 Sausages"
+                ingredientName = name.match(/^(\d*\.?\d+)\s*(.*)$/).slice(1);
+
+                if (!ingredientName) {
+                    // Parsing for multi word ingredients like "1 Slice Black Pudding"
+                    ingredientName = name.replace(/^[\d.]+\s*[a-zA-Z]*\s*/, '').trim().split(' ').pop();
+                }
+                const searchTerm = ingredientName.pop(); // Get the last word
+
+                const cachedData = getCache(searchTerm);
+                if (cachedData) {
+                    setProductInfo(cachedData);
+                    setLoading(false);
+                    return;
+                }
+
                 const response = await fetch(`/api/ingredient-info`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ ingredient: name }),
+                    body: JSON.stringify({ ingredient: searchTerm }),
                 });
                 const data = await response.json();
+                // const data = null
                 setProductInfo(data);
+                setCache(searchTerm, data);
             } catch (error) {
                 console.error("Error fetching product info: ", error);
             } finally {
