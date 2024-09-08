@@ -8,16 +8,7 @@ function Ingredient({ name }) {
     useEffect(() => {
         const fetchProductInfo = async () => {
             try {
-                let ingredientName = null;
-                // Parsing for simple ingredients, like "2 Sausages"
-                ingredientName = name.match(/^(\d*\.?\d+)\s*(.*)$/).slice(1);
-
-                if (!ingredientName) {
-                    // Parsing for multi word ingredients like "1 Slice Black Pudding"
-                    ingredientName = name.replace(/^[\d.]+\s*[a-zA-Z]*\s*/, '').trim().split(' ').pop();
-                }
-                const searchTerm = ingredientName.pop(); // Get the last word
-
+                const searchTerm = name.split(' ').pop().toLowerCase();
                 const cachedData = getCache(searchTerm);
                 if (cachedData) {
                     setProductInfo(cachedData);

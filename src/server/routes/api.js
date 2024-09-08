@@ -12,9 +12,10 @@ function generateCacheKey(ingredient) {
 router.post("/ingredient-info", async (req, res) => {
     try {
         const { ingredient } = req.body;
-        console.log("Received ingredient: ", ingredient);
+        const searchTerm = ingredient.toLowerCase();
+        console.log("Received ingredient: ", searchTerm);
 
-        const cacheKey = generateCacheKey(ingredient);
+        const cacheKey = generateCacheKey(searchTerm);
         console.log("Generated cache key: ", cacheKey);
 
         // Check if the ingredient is in the cache
@@ -23,8 +24,8 @@ router.post("/ingredient-info", async (req, res) => {
 
         if (!cachedData) {
             // If not in cache, fetch from CountdownNZ
-            console.log("Fetching data from CountdownNZ for ingredient: ", ingredient);
-            const results = await searchCountdownNZ([ingredient]);
+            console.log("Fetching data from CountdownNZ for ingredient: ", searchTerm);
+            const results = await searchCountdownNZ([searchTerm]);
             cachedData = results[0];
             console.log("Fetched data: ", cachedData);
       
