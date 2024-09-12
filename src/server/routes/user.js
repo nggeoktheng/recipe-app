@@ -33,7 +33,8 @@ router.post("/", async (req, res) => {
 router.get("/profile", isAuthenticated, async (req, res) => {
     try {
         const userProfile = await getUserProfile(req.session.user.id);
-        res.json({userProfile});
+        if (!userProfile) return res.status(404).json({ error: "User not found" });
+        res.json({...userProfile});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
