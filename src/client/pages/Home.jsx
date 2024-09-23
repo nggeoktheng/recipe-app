@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useLoaderData, Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import LoggedInHeader from "../components/LoggedInHeader";
-
-function RecipeCard({ recipe }) {
-    return (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <img src={recipe.image_url} alt={recipe.title} className="w-full h-48 object-cover" />
-            <div className="p-4">
-                <h3 className="font-bold text-xl mb-2">{recipe.title}</h3>
-                <p className="text-gray-700 text-base">By {recipe.username}</p>
-                <Link to={`/recipes/${recipe.id}`} className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-                    View Recipe
-                </Link>
-            </div>
-        </div>
-    );
-}
+import FavoriteRecipes from "../components/FavoriteRecipes";
+import RecipeCard from "../components/RecipeCard";
 
 function Home() {
     const { recipes: initialRecipes, isAuthed } = useLoaderData();
@@ -55,6 +42,12 @@ function Home() {
     return (
         <>
             {isAuthed ? <LoggedInHeader /> : <LoggedOutHeader />}
+            {isAuthed ? (
+                <div className="container mx-auto px-4 py-8">
+                    <FavoriteRecipes />
+                </div>) 
+                : null
+            }
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-3xl font-bold mb-8">Latest Recipes</h1>
                 <form onSubmit={handleSearch} className="mb-8">
