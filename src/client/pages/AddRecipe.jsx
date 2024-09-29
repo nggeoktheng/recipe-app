@@ -29,7 +29,7 @@ function AddRecipe() {
             console.log("Got data ", data);
             if (data.success) {
                 // Succeeded
-                navigate(`/recipe/${data.recipeId}`);
+                navigate(`/recipes/${data.recipeId}`);
             }
         } catch (error) {
             console.log("Got error: ", error);

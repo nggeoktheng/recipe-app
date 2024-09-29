@@ -43,16 +43,13 @@ router.get("/:recipeId", async (req, res) => {
 router.post("/", isAuthenticated, upload.single("image"), async (req, res) => {
     const imagePath = `/uploads/${req.file.filename}`;
     try {
-        const ingredients = req.body.ingredients.split(",");
+        const ingredients = req.body.ingredients.split("\n");
         console.log("Ingredients: ", ingredients);
-
-        const ingredientsWithProducts = await searchCountdownNZ(ingredients);
-        console.log("Ingredients with products: ", ingredientsWithProducts);
 
         const savedRecipe = await addRecipe({
             user_id: req.session.user.id,
             title: req.body.title,
-            ingredients: ingredientsWithProducts,
+            ingredients,
             steps: req.body.steps,
             cooking_time: req.body.cooking_time,
             image_url: imagePath
