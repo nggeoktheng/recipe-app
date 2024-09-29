@@ -42,6 +42,7 @@
 1. Setup basic app using `create-vite-express`
 
 - This creates a basic project with React and Express, using Vite for the tooling and config
+- use `npm run dev` to run the project locally
 
 2. Setup basic Single Page App (SPA) routing, using react-router through `react-router-dom`
 
