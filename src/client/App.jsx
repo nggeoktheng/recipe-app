@@ -88,7 +88,7 @@ function App() {
     },
     {
       path: "/login",
-      loader: redirectLoader("/profile"),
+      loader: redirectLoader("/"),
       element: <Login />
     },
     {

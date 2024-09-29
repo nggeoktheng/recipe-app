@@ -27,7 +27,7 @@ function Login() {
             
             if (data.success) {
                 window.location.reload(true);
-                navigate("/profile");
+                navigate("/");
             }
 
             if (data.error) {
