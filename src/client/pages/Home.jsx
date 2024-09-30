@@ -3,7 +3,7 @@ import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import LoggedInHeader from "../components/LoggedInHeader";
 import FavoriteRecipes from "../components/FavoriteRecipes";
-import RecipeCard from "../components/RecipeCard";
+import { RecipeCard } from "../components/RecipeCard";
 
 function Home() {
     const { recipes: initialRecipes, isAuthed } = useLoaderData();

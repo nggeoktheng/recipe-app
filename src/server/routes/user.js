@@ -3,6 +3,7 @@ import express from "express";
 import { createUser, getUserProfile, loginUser, setUserAvatar, updateUserProfile } from "../models/user.js";
 import { isAuthenticated } from "../middleware/auth.js";
 import multer from "multer";
+import { getRecipesByUserId } from "../models/recipe.js";
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -34,7 +35,8 @@ router.get("/profile", isAuthenticated, async (req, res) => {
     try {
         const userProfile = await getUserProfile(req.session.user.id);
         if (!userProfile) return res.status(404).json({ error: "User not found" });
-        res.json({...userProfile});
+        const recipes = await getRecipesByUserId(req.session.user.id);
+        res.json({...userProfile, recipes});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

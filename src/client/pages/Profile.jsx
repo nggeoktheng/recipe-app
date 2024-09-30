@@ -4,6 +4,7 @@ import { Avatar } from "@files-ui/react";
 import defaultAvatarImg from "../assets/default.png";
 import ProfileForm from "../components/ProfileForm";
 import { useState, useEffect } from "react";
+import { RecipeCard } from "../components/RecipeCard";
 
 export async function userDataLoader() {
     const res = await fetch("/user/profile", {
@@ -103,6 +104,14 @@ function Profile() {
                         <div className="md:w-2/3 p-8">
                             <ProfileForm user={user} onSubmit={handleProfileUpdate} />
                         </div>
+                    </div>
+                </div>
+                <div className="container mx-auto px-4 py-8">
+                    <h1 className="text-3xl font-bold mb-6">My Recipes</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {user.recipes.map(recipe => (
+                            <RecipeCard key={recipe.id} recipe={recipe} canEdit/>
+                        ))}
                     </div>
                 </div>
             </div>

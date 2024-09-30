@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
@@ -9,10 +9,14 @@ import Comments from "../components/Comments";
 import PreparationSteps from "../components/PreparationSteps";  
 
 function RecipeDetails() {
+    const { mode } = useParams();
     const { recipe, isAuthed } = useLoaderData();
+    const [isEditing, setIsEditing] = useState(mode === "edit");
     const [isStarred, setIsStarred] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    console.log("Mode: ", mode);
 
     useEffect(() => {
         if (!recipe) {

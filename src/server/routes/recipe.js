@@ -2,7 +2,7 @@ import path from "path";
 import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import multer from "multer";
-import { addRecipe, getRecipeById, getRecipes, addComment, getComments, addStar, removeStar, isStarred } from "../models/recipe.js";
+import { addRecipe, getRecipeById, getRecipes, addComment, getComments, addStar, removeStar, isStarred, deleteRecipe, updateRecipe } from "../models/recipe.js";
 import { searchCountdownNZ } from "../services/groceryScraper.js";
 
 const storage = multer.diskStorage({
@@ -38,7 +38,30 @@ router.get("/:recipeId", async (req, res) => {
     } catch (error) {
         return res.json({ error: error.message });
     }
-})
+});
+
+router.post("/:recipeId", isAuthenticated, async (req, res) => {
+    try {
+        const recipe = await updateRecipe(req.params.recipeId, {
+            title: req.body.title,
+            ingredients: req.body.ingredients.split("\n"),
+            steps: req.body.steps,
+            cooking_time: req.body.cooking_time
+        });
+        return res.json({ success: true, recipeId: recipe });
+    } catch (error) {
+        return res.json({ error: error.message });
+    }
+});
+
+router.delete("/:recipeId", isAuthenticated, async (req, res) => {
+    try {
+        const recipe = await deleteRecipe(req.params.recipeId, req.session.user.id);
+        return res.json({ recipe });
+    } catch (error) {
+        return res.json({ error: error.message });
+    }
+});
 
 router.post("/", isAuthenticated, upload.single("image"), async (req, res) => {
     const imagePath = `/uploads/${req.file.filename}`;

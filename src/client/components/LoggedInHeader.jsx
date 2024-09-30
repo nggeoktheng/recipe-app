@@ -48,6 +48,11 @@ function LoggedInHeader({ userImg, firstName }) {
                         Profile
                         </Link>
                     </li>
+                    <li>
+                        <Link to={'/my-recipes'} className="justify-between">
+                        My Recipes
+                        </Link>
+                    </li>
                     <li><Link to={"/add-recipe"}>Add Recipe</Link></li>
                     <li><Link to={"/logout"}>Logout</Link></li>
                 </ul>

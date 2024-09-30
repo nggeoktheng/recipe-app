@@ -18,7 +18,7 @@ export const getRecipes = async (searchTerm = "") => {
 export const getRecipeById = async (recipeId) => {
     try {
         const recipes = await sql`
-            SELECT recipes.id, recipes.user_id, recipes.image_url, recipes.title, recipes.ingredients, recipes.steps, 
+            SELECT recipes.id, recipes.user_id, recipes.image_url, recipes.title, recipes.ingredients, recipes.steps, recipes.cooking_time,
             users.username 
             FROM recipes
             JOIN users ON public.users.id = public.recipes.user_id
@@ -28,6 +28,36 @@ export const getRecipeById = async (recipeId) => {
         return recipes[0];
     } catch (error) {
         console.log("DB Error: ", error.message);
+    }
+}
+
+export const getRecipesByUserId = async (userId) => {
+    try {
+        const recipes = await sql`
+            SELECT recipes.id, recipes.user_id, recipes.image_url, recipes.title, recipes.ingredients, recipes.steps, 
+            users.username 
+            FROM recipes
+            JOIN users ON public.users.id = public.recipes.user_id
+            WHERE public.users.id = ${userId}
+        `;
+
+        return recipes;
+    } catch (error) {
+        console.log("DB Error: ", error.message);
+    }
+}
+
+export const deleteRecipe = async (recipeId, userId) => {
+    try {
+        const result = await sql`
+            DELETE FROM recipes WHERE id = ${recipeId} AND user_id = ${userId}
+        `;
+
+        console.log("Result: ", result);
+        return { success: true };
+    } catch (error) {
+        console.log("Database Error: ", error);
+        throw error;
     }
 }
 
@@ -43,6 +73,31 @@ export const addRecipe = async (recipe) => {
             RETURNING id
         `;
         return addRecipe[0].id;
+    } catch (error) {
+        console.log("Database Error: ", error);
+        throw error;
+    }
+}
+
+export const updateRecipe = async (recipeId, recipe) => {
+    console.log("Updating recipe", {
+        recipe,
+        recipeId
+    });
+    try {
+        const updateRecipe = await sql`
+            UPDATE recipes SET ${
+                sql({
+                    title: recipe.title,
+                    ingredients: JSON.stringify(recipe.ingredients),
+                    steps: recipe.steps,
+                    cooking_time: recipe.cooking_time
+                })
+            }
+            WHERE id = ${recipeId}
+            RETURNING id
+        `;
+        return updateRecipe[0].id;
     } catch (error) {
         console.log("Database Error: ", error);
         throw error;
