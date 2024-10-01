@@ -103,6 +103,9 @@ function RecipeDetails() {
                                 {isStarred ? '★ Starred' : '☆ Star'}
                             </button>
                         </div>
+                        <div className="text-gray-600 text-xl mt-4 mb-3">
+                            <h3 className="font-semibold">Cooking time: {recipe.cooking_time}</h3>
+                        </div>
                         <IngredientsList ingredients={recipe.ingredients} />
                         <PreparationSteps steps={recipe.steps} />
                     </div>
