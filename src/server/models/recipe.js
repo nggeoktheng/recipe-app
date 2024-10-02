@@ -49,11 +49,19 @@ export const getRecipesByUserId = async (userId) => {
 
 export const deleteRecipe = async (recipeId, userId) => {
     try {
-        const result = await sql`
-            DELETE FROM recipes WHERE id = ${recipeId} AND user_id = ${userId}
-        `;
+        // tx means shorthand for transaction
+        const result = await sql.begin(tx => [
+            tx`
+                DELETE FROM starred WHERE recipe_id = ${recipeId}
+            `,
+            tx`
+                DELETE FROM comments WHERE recipe_id = ${recipeId}
+            `,
+            tx`
+                DELETE FROM recipes WHERE id = ${recipeId} AND user_id = ${userId}
+            `,
 
-        console.log("Result: ", result);
+        ]);
         return { success: true };
     } catch (error) {
         console.log("Database Error: ", error);
