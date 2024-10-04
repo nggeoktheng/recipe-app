@@ -34,8 +34,9 @@
 4. Create a database to use for the recipe app
    1. In the left navigation, under `Servers > Local > Databases`, right click `Databases` it might say `Databases (1)`
    2. Select `Create > Database...`
-   3. Give the database a name, such as `recipe-app-db`
+   3. Give the database a name, `recipe-app-db`
    4. Click `Save`
+   5. Create table for users, recipes, comments and starred in the database
 
 ### Steps
 
